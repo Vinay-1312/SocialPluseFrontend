@@ -1,0 +1,64 @@
+{
+  "compilerOptions": {
+    // Target & Module
+    "target": "ES2022",                    // Modern JS features
+    "module": "ESNext",                    // Latest module system
+    "moduleResolution": "bundler",         // For Vite/modern bundlers
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    
+    // Strict Type Checking
+    "strict": true,                        // Enable all strict checks
+    "noImplicitAny": true,                 // Error on 'any' type
+    "strictNullChecks": true,              // Null safety
+    "strictFunctionTypes": true,           // Function type safety
+    "noImplicitReturns": true,             // All code paths return
+    "noFallthroughCasesInSwitch": true,    // Switch case safety
+    
+    // Module Resolution
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["src/*"],
+      "@/components/*": ["src/components/*"],
+      "@/utils/*": ["src/utils/*"],
+      "@/types/*": ["src/types/*"],
+      "@/core/*": ["src/core/*"]
+    },
+    "resolveJsonModule": true,             // Import JSON files
+    "allowSyntheticDefaultImports": true,  // Better import compatibility
+    "esModuleInterop": true,               // CommonJS interop
+    
+    // Emit
+    "declaration": false,                   // Generate .d.ts files
+    "declarationMap": false,                // Source maps for declarations
+    "sourceMap": true,                     // Debug source maps
+    "outDir": "./dist",                    // Output directory
+    "removeComments": true,                // Clean output
+    "noEmit": true,                        // For bundler-only builds
+    
+    // Advanced
+    "skipLibCheck": true,                  
+    "forceConsistentCasingInFileNames": true,
+    "allowUnusedLabels": false,
+    "allowUnreachableCode": false,
+    "exactOptionalPropertyTypes": true,    // Stricter optional props
+    "noUncheckedIndexedAccess": true,      // Safe array/object access
+    
+    // React Specific
+    "jsx": "react-jsx",                    // Modern JSX transform
+    "jsxImportSource": "react"             // React 17+ JSX
+  },
+  "include": [
+    "src/**/*",
+    "src/**/*.json",
+    "**/*.ts",
+    "**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build",
+    "coverage",
+    "**/*.test.ts",
+    "**/*.test.tsx"
+  ]
+}

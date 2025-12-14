@@ -1,18 +1,8 @@
 import { useState } from 'react';
-import {
-  Box,
-  Container,
-  Tabs,
-  Tab,
-  TextField,
-  Button,
-  Typography,
-  Link,
-  Alert,
-  CircularProgress,
-  Paper,
-} from '@mui/material';
-import { Lock, Email, Person } from '@mui/icons-material';
+import { Box, Tabs, Tab, Typography, Alert, Paper } from '@mui/material';
+import { Lock } from '@mui/icons-material';
+import { Login } from './Login';
+import { Signup } from './Signup';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -38,23 +28,8 @@ function TabPanel(props: TabPanelProps) {
 
 export const AuthPage = () => {
   const [tabValue, setTabValue] = useState(0);
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-
-  // Login form state
-  const [loginForm, setLoginForm] = useState({
-    email: '',
-    password: '',
-  });
-
-  // Signup form state
-  const [signupForm, setSignupForm] = useState({
-    fullName: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-  });
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
@@ -62,100 +37,25 @@ export const AuthPage = () => {
     setSuccess(null);
   };
 
-  const handleLoginChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setLoginForm((prev) => ({ ...prev, [name]: value }));
+  const handleSwitchToLogin = () => {
+    setTabValue(0);
+    setError(null);
   };
 
-  const handleSignupChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setSignupForm((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const validateEmail = (email: string): boolean => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
-
-  const handleLoginSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSwitchToSignup = () => {
+    setTabValue(1);
     setError(null);
     setSuccess(null);
-
-    // Validation
-    if (!loginForm.email || !loginForm.password) {
-      setError('Please fill in all fields');
-      return;
-    }
-
-    if (!validateEmail(loginForm.email)) {
-      setError('Please enter a valid email');
-      return;
-    }
-
-    setLoading(true);
-    try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      setSuccess('Login successful! Redirecting...');
-      setLoginForm({ email: '', password: '' });
-      // TODO: Implement actual login logic
-    } catch (err) {
-      setError('Login failed. Please try again.');
-    } finally {
-      setLoading(false);
-    }
   };
 
-  const handleSignupSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSuccess = (message: string) => {
+    setSuccess(message);
     setError(null);
+  };
+
+  const handleError = (message: string) => {
+    setError(message);
     setSuccess(null);
-
-    // Validation
-    if (
-      !signupForm.fullName ||
-      !signupForm.email ||
-      !signupForm.password ||
-      !signupForm.confirmPassword
-    ) {
-      setError('Please fill in all fields');
-      return;
-    }
-
-    if (!validateEmail(signupForm.email)) {
-      setError('Please enter a valid email');
-      return;
-    }
-
-    if (signupForm.password.length < 6) {
-      setError('Password must be at least 6 characters');
-      return;
-    }
-
-    if (signupForm.password !== signupForm.confirmPassword) {
-      setError('Passwords do not match');
-      return;
-    }
-
-    setLoading(true);
-    try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      setSuccess('Account created successfully! Please log in.');
-      setSignupForm({
-        fullName: '',
-        email: '',
-        password: '',
-        confirmPassword: '',
-      });
-      setTabValue(0);
-      // TODO: Implement actual signup logic
-    } catch (err) {
-      setError('Signup failed. Please try again.');
-    } finally {
-      setLoading(false);
-    }
   };
 
   return (
@@ -230,169 +130,20 @@ export const AuthPage = () => {
 
         {/* Login Tab */}
         <TabPanel value={tabValue} index={0}>
-          <form onSubmit={handleLoginSubmit}>
-            <TextField
-              fullWidth
-              label="Email"
-              type="email"
-              name="email"
-              value={loginForm.email}
-              onChange={handleLoginChange}
-              margin="normal"
-              variant="outlined"
-              disabled={loading}
-              InputProps={{
-                startAdornment: (
-                  <Email sx={{ mr: 1, color: 'action.active' }} />
-                ),
-              }}
-            />
-            <TextField
-              fullWidth
-              label="Password"
-              type="password"
-              name="password"
-              value={loginForm.password}
-              onChange={handleLoginChange}
-              margin="normal"
-              variant="outlined"
-              disabled={loading}
-              InputProps={{
-                startAdornment: <Lock sx={{ mr: 1, color: 'action.active' }} />,
-              }}
-            />
-
-            <Link
-              href="#"
-              variant="body2"
-              sx={{ display: 'block', mt: 1, mb: 2, textAlign: 'right' }}
-            >
-              Forgot password?
-            </Link>
-
-            <Button
-              fullWidth
-              variant="contained"
-              size="large"
-              type="submit"
-              disabled={loading}
-              sx={{
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                mt: 2,
-              }}
-            >
-              {loading ? <CircularProgress size={24} /> : 'Login'}
-            </Button>
-
-            <Box sx={{ textAlign: 'center', mt: 2 }}>
-              <Typography variant="body2">
-                Don't have an account?{' '}
-                <Link
-                  component="button"
-                  variant="body2"
-                  onClick={() => setTabValue(1)}
-                  sx={{ cursor: 'pointer' }}
-                >
-                  Sign up
-                </Link>
-              </Typography>
-            </Box>
-          </form>
+          <Login
+            onSwitchToSignup={handleSwitchToSignup}
+            onSuccess={handleSuccess}
+            onError={handleError}
+          />
         </TabPanel>
 
         {/* Signup Tab */}
         <TabPanel value={tabValue} index={1}>
-          <form onSubmit={handleSignupSubmit}>
-            <TextField
-              fullWidth
-              label="Full Name"
-              type="text"
-              name="fullName"
-              value={signupForm.fullName}
-              onChange={handleSignupChange}
-              margin="normal"
-              variant="outlined"
-              disabled={loading}
-              InputProps={{
-                startAdornment: (
-                  <Person sx={{ mr: 1, color: 'action.active' }} />
-                ),
-              }}
-            />
-            <TextField
-              fullWidth
-              label="Email"
-              type="email"
-              name="email"
-              value={signupForm.email}
-              onChange={handleSignupChange}
-              margin="normal"
-              variant="outlined"
-              disabled={loading}
-              InputProps={{
-                startAdornment: (
-                  <Email sx={{ mr: 1, color: 'action.active' }} />
-                ),
-              }}
-            />
-            <TextField
-              fullWidth
-              label="Password"
-              type="password"
-              name="password"
-              value={signupForm.password}
-              onChange={handleSignupChange}
-              margin="normal"
-              variant="outlined"
-              disabled={loading}
-              helperText="Minimum 6 characters"
-              InputProps={{
-                startAdornment: <Lock sx={{ mr: 1, color: 'action.active' }} />,
-              }}
-            />
-            <TextField
-              fullWidth
-              label="Confirm Password"
-              type="password"
-              name="confirmPassword"
-              value={signupForm.confirmPassword}
-              onChange={handleSignupChange}
-              margin="normal"
-              variant="outlined"
-              disabled={loading}
-              InputProps={{
-                startAdornment: <Lock sx={{ mr: 1, color: 'action.active' }} />,
-              }}
-            />
-
-            <Button
-              fullWidth
-              variant="contained"
-              size="large"
-              type="submit"
-              disabled={loading}
-              sx={{
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                mt: 3,
-              }}
-            >
-              {loading ? <CircularProgress size={24} /> : 'Create Account'}
-            </Button>
-
-            <Box sx={{ textAlign: 'center', mt: 2 }}>
-              <Typography variant="body2">
-                Already have an account?{' '}
-                <Link
-                  component="button"
-                  variant="body2"
-                  onClick={() => setTabValue(0)}
-                  sx={{ cursor: 'pointer' }}
-                >
-                  Login
-                </Link>
-              </Typography>
-            </Box>
-          </form>
+          <Signup
+            onSwitchToLogin={handleSwitchToLogin}
+            onSuccess={handleSuccess}
+            onError={handleError}
+          />
         </TabPanel>
       </Paper>
     </Box>

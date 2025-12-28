@@ -42,13 +42,14 @@ export interface LoginInitData {
 }
 
 export interface LoginInitResponse {
-  message: string;
-  sessionToken: string;
+  userId: number;
+  loginSessionToken: string;
 }
 
 export interface LoginVerifyData {
-  sessionToken: string;
-  totpCode: string;
+  loginSessionToken: string;
+  totpCode?: string;
+  backupCode?: string;
 }
 
 export interface LoginVerifyResponse {
@@ -58,8 +59,11 @@ export interface LoginVerifyResponse {
     email: string;
     name: string;
   };
-  accessToken: string;
-  refreshToken: string;
+  tokens: {
+    accessToken: string;
+    refreshToken: string;
+    expiresIn: number;
+  };
 }
 
 // Token Management Types

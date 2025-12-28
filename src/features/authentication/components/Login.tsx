@@ -54,11 +54,13 @@ export const Login = ({ onSwitchToSignup, onSuccess, onError }: LoginProps) => {
       },
       {
         onSuccess: (data) => {
-          setSessionToken(data.sessionToken);
+          setSessionToken(data.loginSessionToken);
           setCurrentStep('totp-verify');
         },
         onError: (err) => {
-          onError(err.message || 'Login failed. Please check your credentials.');
+          onError(
+            err.message || 'Login failed. Please check your credentials.'
+          );
         },
       }
     );
@@ -67,19 +69,16 @@ export const Login = ({ onSwitchToSignup, onSuccess, onError }: LoginProps) => {
   const handleTOTPVerify = (totpCode: string) => {
     loginVerifyMutation.mutate(
       {
-        sessionToken,
-        totpCode,
+        loginSessionToken: sessionToken,
+        totpCode: totpCode,
       },
       {
         onSuccess: (data) => {
           // Save user and tokens to auth context
-          setAuth(
-            data.user,
-            {
-              accessToken: data.accessToken,
-              refreshToken: data.refreshToken,
-            }
-          );
+          setAuth(data.user, {
+            accessToken: data.accessToken,
+            refreshToken: data.refreshToken,
+          });
 
           onSuccess(data.message || 'Login successful!');
 
@@ -100,7 +99,8 @@ export const Login = ({ onSwitchToSignup, onSuccess, onError }: LoginProps) => {
     setSessionToken('');
   };
 
-  const isLoading = loginInitMutation.isPending || loginVerifyMutation.isPending;
+  const isLoading =
+    loginInitMutation.isPending || loginVerifyMutation.isPending;
 
   return (
     <Box>
